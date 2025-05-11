@@ -1,0 +1,26 @@
+// Define ext properties first
+buildscript {
+    ext.flutterSdkPath = ''
+}
+
+// Use classes directly with full package names
+def localPropertiesFile = new java.io.File(rootProject.projectDir, "local.properties")
+if (localPropertiesFile.exists()) {
+    java.util.Properties properties = new java.util.Properties()
+    localPropertiesFile.withReader("UTF-8") { reader -> properties.load(reader) }
+    buildscript.ext.flutterSdkPath = properties.getProperty("flutter.sdk")
+}
+
+pluginManagement {
+    includeBuild("${buildscript.ext.flutterSdkPath}/packages/flutter_tools/gradle/app_plugin_loader")
+
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+include ':app'
+
+assert buildscript.ext.flutterSdkPath != null, "flutter.sdk not set in local.properties"
